@@ -1,4 +1,5 @@
 import categoryRoutes from '../src/modules/category/category.routes.js'
+import { globalErrorHandling } from './middleware/globalErrorHandling.js'
 import { AppError } from './utils/AppError.js'
 
 
@@ -14,7 +15,5 @@ export const bootstrap = (app) => {
 
 
     //NOTE - Global Error Handling 
-    app.use((err, req, res, next) => {
-        res.status(err.statusCode || 500).json({ err: err.message })
-    })
+    app.use(globalErrorHandling)
 } 

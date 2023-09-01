@@ -1,6 +1,7 @@
 import { categoryModel } from '../../../../database/models/category.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
+import { AppError } from '../../../utils/AppError.js';
 
 const addCategory = handleAsyncError(async (req, res, next) => {
     let { name } = req.body;
@@ -23,7 +24,8 @@ const updateCategory = handleAsyncError(async (req, res, next) => {
     let { name } = req.body;
     if (name) req.body.slug = slugify(name)
     const updatedCategory = await categoryModel.findByIdAndUpdate(id, req.body, { new: true })
-    res.status(201).json({ message: "success", updatedCategory });
+    !updatedCategory && next(new AppError('Category Not Found.', 404));
+    updatedCategory && res.status(201).json({ message: "success", updatedCategory });
 
 });
 
@@ -33,7 +35,7 @@ const deleteCategory = handleAsyncError(async (req, res, next) => {
     let { id } = req.params;
     const deletedCategory = await categoryModel.findByIdAndDelete(id);
     console.log(deletedCategory);
-    !deletedCategory && res.status(404).json({ message: "Category Not Found." });
+    !deletedCategory && next(new AppError('Category Not Found.', 404));
     deletedCategory && res.status(201).json({ message: "success", deletedCategory });
 
 });
