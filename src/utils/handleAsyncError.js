@@ -1,6 +1,6 @@
 export const handleAsyncError = (apiFunction) => {
     return (req, res, next) => {
-        apiFunction(req, res, next).catch(err => res.json({ err: err.message }))
+        apiFunction(req, res, next).catch(err => next(err))
     }
 
 }
