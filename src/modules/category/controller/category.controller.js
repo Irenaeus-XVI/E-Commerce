@@ -2,6 +2,7 @@ import { categoryModel } from '../../../../database/models/category.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
+import { deleteOne } from '../../helpers/refactor.js';
 
 const addCategory = handleAsyncError(async (req, res, next) => {
     let { name } = req.body;
@@ -31,14 +32,7 @@ const updateCategory = handleAsyncError(async (req, res, next) => {
 
 
 
-const deleteCategory = handleAsyncError(async (req, res, next) => {
-    let { id } = req.params;
-    const deletedCategory = await categoryModel.findByIdAndDelete(id);
-    console.log(deletedCategory);
-    !deletedCategory && next(new AppError('Category Not Found.', 404));
-    deletedCategory && res.status(201).json({ message: "success", deletedCategory });
-
-});
+const deleteCategory = deleteOne(categoryModel,'category');
 
 
 export {
