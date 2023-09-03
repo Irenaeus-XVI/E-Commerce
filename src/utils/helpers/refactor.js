@@ -1,5 +1,5 @@
-import { AppError } from "../../utils/AppError.js";
-import { handleAsyncError } from "../../utils/handleAsyncError.js";
+import { AppError } from "../AppError.js";
+import { handleAsyncError } from "../handleAsyncError.js";
 
 export const deleteOne = (model, name) => {
     return handleAsyncError(async (req, res, next) => {

@@ -2,7 +2,7 @@ import { brandModel } from '../../../../database/models/brand.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne } from '../../helpers/refactor.js';
+import { deleteOne } from '../../../utils/helpers/refactor.js';
 
 const addBrand = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name)

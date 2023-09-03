@@ -3,7 +3,7 @@ import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { categoryModel } from '../../../../database/models/category.model.js';
-import { deleteOne } from '../../helpers/refactor.js';
+import { deleteOne } from '../../../utils/helpers/refactor.js';
 
 const addSubCategory = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name)

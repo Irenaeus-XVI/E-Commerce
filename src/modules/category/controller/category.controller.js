@@ -2,7 +2,7 @@ import { categoryModel } from '../../../../database/models/category.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne } from '../../helpers/refactor.js';
+import { deleteOne } from '../../../utils/helpers/refactor.js';
 
 const addCategory = handleAsyncError(async (req, res, next) => {
     let { name } = req.body;
