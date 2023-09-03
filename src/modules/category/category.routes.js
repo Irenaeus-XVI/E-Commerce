@@ -3,6 +3,6 @@ import * as category from './controller/category.controller.js';
 const router = express.Router();
 
 router.route('/').post(category.addCategory).get(category.getAllCategories)
-router.route('/:id').put(category.updateCategory).delete(category.deleteCategory)
+router.route('/:id').put(category.updateCategory).delete(category.deleteCategory).get(category.getSpecificCategory)
 
 export default router 

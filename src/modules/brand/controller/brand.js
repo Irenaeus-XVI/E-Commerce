@@ -17,7 +17,13 @@ const getAllBrands = handleAsyncError(async (req, res, next) => {
     const brands = await brandModel.find()
     res.status(201).json({ message: "success", brands });
 });
+const getSpecificBrand = handleAsyncError(async (req, res, next) => {
+    const { id } = req.params;
 
+    const Brand = await brandModel.findById(id)
+    !Brand && next(new AppError('Product Not Found.', 404))
+    Brand && res.status(201).json({ message: "success", Brand });
+});
 
 
 const updateBrand = handleAsyncError(async (req, res, next) => {
@@ -33,12 +39,13 @@ const updateBrand = handleAsyncError(async (req, res, next) => {
 
 
 
-const deleteBrand = deleteOne(brandModel,'brand');
+const deleteBrand = deleteOne(brandModel, 'brand');
 
 
 export {
     addBrand,
     getAllBrands,
     updateBrand,
+    getSpecificBrand,
     deleteBrand
 }

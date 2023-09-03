@@ -18,7 +18,13 @@ const getAllCategories = handleAsyncError(async (req, res, next) => {
     res.status(201).json({ message: "success", categories });
 });
 
+const getSpecificCategory = handleAsyncError(async (req, res, next) => {
+    const { id } = req.params;
 
+    const Category = await categoryModel.findById(id)
+    !Category && next(new AppError('Product Not Found.', 404))
+    Category && res.status(201).json({ message: "success", Category });
+});
 
 const updateCategory = handleAsyncError(async (req, res, next) => {
     let { id } = req.params;
@@ -32,12 +38,13 @@ const updateCategory = handleAsyncError(async (req, res, next) => {
 
 
 
-const deleteCategory = deleteOne(categoryModel,'category');
+const deleteCategory = deleteOne(categoryModel, 'category');
 
 
 export {
     addCategory,
     getAllCategories,
     updateCategory,
+    getSpecificCategory,
     deleteCategory
 }

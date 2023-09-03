@@ -18,12 +18,18 @@ const addSubCategory = handleAsyncError(async (req, res, next) => {
 });
 
 
-const getAllCategories = handleAsyncError(async (req, res, next) => {
+const getAllSubCategories = handleAsyncError(async (req, res, next) => {
     const categories = await subCategoryModel.find()
     res.status(201).json({ message: "success", categories });
 });
 
+const getSpecificSubCategory = handleAsyncError(async (req, res, next) => {
+    const { id } = req.params;
 
+    const SubCategory = await subCategoryModel.findById(id)
+    !SubCategory && next(new AppError('Product Not Found.', 404))
+    SubCategory && res.status(201).json({ message: "success", SubCategory });
+});
 
 const updateSubCategory = handleAsyncError(async (req, res, next) => {
     let { id } = req.params;
@@ -42,12 +48,13 @@ const updateSubCategory = handleAsyncError(async (req, res, next) => {
 
 
 
-const deleteSubCategory = deleteOne(subCategoryModel,'subCategory')
+const deleteSubCategory = deleteOne(subCategoryModel, 'subCategory')
 
 
 export {
     addSubCategory,
-    getAllCategories,
+    getAllSubCategories,
     updateSubCategory,
+    getSpecificSubCategory,
     deleteSubCategory
 }
