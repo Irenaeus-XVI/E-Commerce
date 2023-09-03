@@ -8,7 +8,7 @@ const subCategorySchema = new Schema({
         required: true,
         unique: true,
         trim: true,
-        minLength: [3, 'to short subCategory name']
+        minLength: [2, 'to short subCategory name']
     },
     slug: {
         type: String,
