@@ -14,8 +14,16 @@ const addProduct = handleAsyncError(async (req, res, next) => {
 
 
 const getAllProducts = handleAsyncError(async (req, res, next) => {
-    const products = await productModel.find()
-    res.status(201).json({ message: "success", products });
+
+    const limit = 5;
+    //NOTE - if there is no page given or given string value 
+    let page = req.query.page * 1 || 1
+    //NOTE - if page value <=0
+    if (page <= 0) page = 1
+    const skip = (page - 1) * limit;
+    console.log(page);
+    const products = await productModel.find().skip(skip).limit(limit)
+    res.status(201).json({ page: +page, message: "success", products });
 });
 
 
