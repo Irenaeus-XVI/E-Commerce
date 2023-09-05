@@ -24,8 +24,9 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
     const skip = (page - 1) * limit;
     console.log(page);
     //NOTE - filter
-    filtration
-    let filterObg = req.query;
+
+    //NOTE - deep copy
+    let filterObg = { ...req.query };
     let excludedQuery = ['page', 'sort', 'fields', 'keyword'];
     excludedQuery.forEach(q => {
         delete filterObg[q];
@@ -34,8 +35,17 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
     filterObg = JSON.stringify(filterObg);
     filterObg = filterObg.replace(/(gt|gte|let|lte)/g, match => `$ ${match}`)
     filterObg = JSON.parse(filterObg);
-    console.log(filterObg);
-    const products = await productModel.find(filterObg).skip(skip).limit(limit)
+
+    //NOTE - sort
+    let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit)
+    if (req.query.sort) {
+        let sortedBy = req.query.sort.split(',').join(' ')
+        console.log(sortedBy);
+        mongooseQuery.sort(sortedBy)
+    }
+    const products = await mongooseQuery
+
+
     res.status(201).json({ page: +page, message: "success", products });
 });
 
