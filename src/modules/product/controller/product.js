@@ -37,12 +37,16 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
     filterObg = JSON.parse(filterObg);
 
     //NOTE - sort
-    let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit)
+
+    //NOTE - build query
+    let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit);
+
     if (req.query.sort) {
-        let sortedBy = req.query.sort.split(',').join(' ')
+        let sortedBy = req.query.sort.split(',').join(' ');
         console.log(sortedBy);
-        mongooseQuery.sort(sortedBy)
+        mongooseQuery.sort(sortedBy);
     }
+    //NOTE - execute query
     const products = await mongooseQuery
 
 
