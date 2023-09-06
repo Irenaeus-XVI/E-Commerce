@@ -36,11 +36,11 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
     filterObg = filterObg.replace(/(gt|gte|let|lte)/g, match => `$ ${match}`)
     filterObg = JSON.parse(filterObg);
 
-    //NOTE - sort
+
 
     //NOTE - build query
     let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit);
-
+    //NOTE - sort
     if (req.query.sort) {
         let sortedBy = req.query.sort.split(',').join(' ');
         console.log(sortedBy);
@@ -55,6 +55,14 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
             { description: { $regex: req.query.keyword, $options: 'i' } }]
         });
     }
+
+
+    //NOTE - selected fields
+    if (req.query.fields) {
+        let fields = req.query.fields.split(',').join(' ');
+        mongooseQuery.select(fields);
+    }
+
 
 
     //NOTE - execute query
