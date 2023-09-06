@@ -2,7 +2,7 @@ import { productModel } from '../../../../database/models/product.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne } from '../../../utils/helpers/refactor.js';
+import { deleteOne, getAll } from '../../../utils/helpers/refactor.js';
 
 const addProduct = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.title)
@@ -13,17 +13,7 @@ const addProduct = handleAsyncError(async (req, res, next) => {
 });
 
 
-const getAllProducts = handleAsyncError(async (req, res, next) => {
-
-    //NOTE - build query
-    let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit);
-
-
-    //NOTE - execute query
-    const products = await mongooseQuery
-
-    res.status(201).json({ page: +page, message: "success", products });
-});
+const getAllProducts = getAll(productModel, 'Products')
 
 
 

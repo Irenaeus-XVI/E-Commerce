@@ -2,7 +2,7 @@ import { categoryModel } from '../../../../database/models/category.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne } from '../../../utils/helpers/refactor.js';
+import { deleteOne, getAll } from '../../../utils/helpers/refactor.js';
 
 const addCategory = handleAsyncError(async (req, res, next) => {
     let { name } = req.body;
@@ -13,10 +13,7 @@ const addCategory = handleAsyncError(async (req, res, next) => {
 });
 
 
-const getAllCategories = handleAsyncError(async (req, res, next) => {
-    const categories = await categoryModel.find()
-    res.status(201).json({ message: "success", categories });
-});
+const getAllCategories = getAll(categoryModel, 'categories')
 
 const getSpecificCategory = handleAsyncError(async (req, res, next) => {
     const { id } = req.params;

@@ -9,10 +9,11 @@ export class ApiFeatures {
     paginate() {
         const limit = 5;
         //NOTE - if there is no page given or given string value 
-        let page = this.query * 1 || 1
+        let page = this.query.page * 1 || 1
         //NOTE - if page value <=0
         if (page <= 0) page = 1
         const skip = (page - 1) * limit;
+        this.page = page
         this.mongooseQuery.skip(skip).limit(limit)
         return this
     }
@@ -38,7 +39,6 @@ export class ApiFeatures {
     sort() {
         if (this.query.sort) {
             let sortedBy = this.query.sort.split(',').join(' ');
-            console.log(sortedBy);
             this.mongooseQuery.sort(sortedBy);
         }
 
@@ -66,7 +66,7 @@ export class ApiFeatures {
     fields() {
         if (this.query.fields) {
             let fields = this.query.fields.split(',').join(' ');
-            mongooseQuery.select(fields);
+            this.mongooseQuery.select(fields);
         }
         return this
     }

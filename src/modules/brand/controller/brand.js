@@ -2,7 +2,7 @@ import { brandModel } from '../../../../database/models/brand.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne } from '../../../utils/helpers/refactor.js';
+import { deleteOne, getAll } from '../../../utils/helpers/refactor.js';
 
 const addBrand = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name)
@@ -13,10 +13,10 @@ const addBrand = handleAsyncError(async (req, res, next) => {
 });
 
 
-const getAllBrands = handleAsyncError(async (req, res, next) => {
-    const brands = await brandModel.find()
-    res.status(201).json({ message: "success", brands });
-});
+const getAllBrands = getAll(brandModel, 'brands')
+
+
+
 const getSpecificBrand = handleAsyncError(async (req, res, next) => {
     const { id } = req.params;
 
