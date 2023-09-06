@@ -15,54 +15,8 @@ const addProduct = handleAsyncError(async (req, res, next) => {
 
 const getAllProducts = handleAsyncError(async (req, res, next) => {
 
-    //NOTE - pagination
-    const limit = 5;
-    //NOTE - if there is no page given or given string value 
-    let page = req.query.page * 1 || 1
-    //NOTE - if page value <=0
-    if (page <= 0) page = 1
-    const skip = (page - 1) * limit;
-    console.log(page);
-    //NOTE - filter
-
-    //NOTE - deep copy
-    let filterObg = { ...req.query };
-    let excludedQuery = ['page', 'sort', 'fields', 'keyword'];
-    excludedQuery.forEach(q => {
-        delete filterObg[q];
-    });
-
-    filterObg = JSON.stringify(filterObg);
-    filterObg = filterObg.replace(/(gt|gte|let|lte)/g, match => `$ ${match}`)
-    filterObg = JSON.parse(filterObg);
-
-
-
     //NOTE - build query
     let mongooseQuery = productModel.find(filterObg).skip(skip).limit(limit);
-    //NOTE - sort
-    if (req.query.sort) {
-        let sortedBy = req.query.sort.split(',').join(' ');
-        console.log(sortedBy);
-        mongooseQuery.sort(sortedBy);
-    }
-
-
-    //NOTE - search
-    if (req.query.keyword) {
-        mongooseQuery.find({
-            $or: [{ title: { $regex: req.query.keyword, $options: 'i' } },
-            { description: { $regex: req.query.keyword, $options: 'i' } }]
-        });
-    }
-
-
-    //NOTE - selected fields
-    if (req.query.fields) {
-        let fields = req.query.fields.split(',').join(' ');
-        mongooseQuery.select(fields);
-    }
-
 
 
     //NOTE - execute query
