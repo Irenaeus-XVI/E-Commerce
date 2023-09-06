@@ -46,9 +46,19 @@ const getAllProducts = handleAsyncError(async (req, res, next) => {
         console.log(sortedBy);
         mongooseQuery.sort(sortedBy);
     }
+
+
+    //NOTE - search
+    if (req.query.keyword) {
+        mongooseQuery.find({
+            $or: [{ title: { $regex: req.query.keyword, $options: 'i' } },
+            { description: { $regex: req.query.keyword, $options: 'i' } }]
+        });
+    }
+
+
     //NOTE - execute query
     const products = await mongooseQuery
-
 
     res.status(201).json({ page: +page, message: "success", products });
 });
