@@ -29,4 +29,28 @@ export const getAll = (apiModel, name) => {
         console.log(response);
         res.status(201).json({ page: +apiFeatures.page, message: "success", ...response });
     })
+
+
+
+
+
+
+
+
+}
+
+
+
+export const getSpecific = (apiModel, name) => {
+    return handleAsyncError(async (req, res, next) => {
+
+        const { id } = req.params;
+
+        const document = await apiModel.findById(id)
+        let response = {}
+        response[name] = document
+        !document && next(new AppError(`${name} Not Found.`, 404))
+        document && res.status(201).json({ message: "success", ...response });
+    })
+
 }

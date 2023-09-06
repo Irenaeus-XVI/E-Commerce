@@ -3,7 +3,7 @@ import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { categoryModel } from '../../../../database/models/category.model.js';
-import { deleteOne } from '../../../utils/helpers/refactor.js';
+import { deleteOne, getSpecific } from '../../../utils/helpers/refactor.js';
 
 const addSubCategory = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.name)
@@ -26,13 +26,9 @@ const getAllSubCategories = handleAsyncError(async (req, res, next) => {
     res.status(201).json({ message: "success", categories });
 });
 
-const getSpecificSubCategory = handleAsyncError(async (req, res, next) => {
-    const { id } = req.params;
 
-    const SubCategory = await subCategoryModel.findById(id)
-    !SubCategory && next(new AppError('Product Not Found.', 404))
-    SubCategory && res.status(201).json({ message: "success", SubCategory });
-});
+const getSpecificSubCategory = getSpecific(subCategoryModel, 'subCategory')
+
 
 const updateSubCategory = handleAsyncError(async (req, res, next) => {
     let { id } = req.params;

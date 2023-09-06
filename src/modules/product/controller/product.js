@@ -2,7 +2,7 @@ import { productModel } from '../../../../database/models/product.model.js'
 import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
-import { deleteOne, getAll } from '../../../utils/helpers/refactor.js';
+import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
 
 const addProduct = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.title)
@@ -16,15 +16,7 @@ const addProduct = handleAsyncError(async (req, res, next) => {
 const getAllProducts = getAll(productModel, 'Products')
 
 
-
-const getSpecificProduct = handleAsyncError(async (req, res, next) => {
-    const { id } = req.params;
-
-    const product = await productModel.findById(id)
-    !product && next(new AppError('Product Not Found.', 404))
-    product && res.status(201).json({ message: "success", product });
-});
-
+const getSpecificProduct = getSpecific(productModel, 'Product')
 
 
 const updateProduct = handleAsyncError(async (req, res, next) => {
