@@ -8,7 +8,7 @@ const productSchema = new Schema({
         required: true,
         unique: true,
         trim: true,
-        minLength: [3, 'to short product name']
+        minLength: [2, 'to short product name']
 
     },
     slug: {
