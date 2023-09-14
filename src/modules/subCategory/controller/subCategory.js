@@ -34,11 +34,11 @@ const updateSubCategory = handleAsyncError(async (req, res, next) => {
     let { id } = req.params;
     let { name } = req.body;
     if (name) req.body.slug = slugify(name)
-    const { category } = req.body
-    const categoryExist = await categoryModel.findById(category)
-    if (!categoryExist) {
-        return next(new AppError('Category Not Found.', 404));
-    }
+    // const { category } = req.body
+    // const categoryExist = await categoryModel.findById(category)
+    // if (!categoryExist) {
+    //     return next(new AppError('Category Not Found.', 404));
+    // }
     const updatedSubCategory = await subCategoryModel.findByIdAndUpdate(id, req.body, { new: true })
     !updatedSubCategory && next(new AppError('subCategory  Not Found.', 404));
     updatedSubCategory && res.status(201).json({ message: "success", updatedSubCategory });
