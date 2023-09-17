@@ -6,7 +6,8 @@ import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.
 
 const addProduct = handleAsyncError(async (req, res, next) => {
     req.body.slug = slugify(req.body.title)
-
+    req.body.imageCover = req.files.imageCover[0].filename
+    req.body.images = req.files.images.map(image => image.filename)
     const product = new productModel(req.body)
     await product.save()
     res.status(201).json({ message: "success", product });

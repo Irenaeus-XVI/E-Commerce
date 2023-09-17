@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 import { AppError } from '../utils/AppError.js';
 
+function refactorMulter(folderName) {
 
 
-export const uploadFile = (fieldName, folderName) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, `uploads/${folderName}`)
@@ -29,5 +29,9 @@ export const uploadFile = (fieldName, folderName) => {
     }
 
     const upload = multer({ storage, fileFilter })
-    return upload.single(fieldName)
+    return upload
 }
+
+export const uploadFile = (fieldName, folderName) => refactorMulter(folderName).single(fieldName)
+
+export const uploadMixedFiles = (arrOfFields, folderName) => refactorMulter(folderName).fields(arrOfFields)

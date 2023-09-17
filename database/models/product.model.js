@@ -76,5 +76,10 @@ const productSchema = new Schema({
     },
 }, { timestamps: true });
 
+productSchema.post('init', (doc) => {
+    doc.imageCover = "http://localhost:4000/product/" + doc.imageCover
 
+    doc.images = doc.images.map(image => "http://localhost:4000/product/" + image
+    )
+})
 export const productModel = model('product', productSchema);
