@@ -5,8 +5,10 @@ import { AppError } from '../../../utils/AppError.js';
 import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
 
 const addCategory = handleAsyncError(async (req, res, next) => {
+    console.log(req.file);
     let { name } = req.body;
     req.body.slug = slugify(req.body.name)
+    req.body.image = req.file.filename 
     const category = new categoryModel(req.body)
     await category.save()
     res.status(201).json({ message: "success", category });

@@ -18,5 +18,10 @@ const categorySchema = new Schema({
     }
 }, { timestamps: true });
 
+categorySchema.post('init', (doc) => {
+    console.log(doc.image);
+    doc.image = "http://localhost:4000/category/" + doc.image
+})
+
 
 export const categoryModel = model('category', categorySchema);
