@@ -28,8 +28,17 @@ const deleteUserValidation =
         id: Joi.string().hex().length(24).required()
     })
 
+
+const changeUserPassword =
+    Joi.object({
+        id: Joi.string().hex().length(24).required(),
+        password: Joi.string()
+            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+    })
+
 export {
     addUserValidation,
     updateUserValidation,
-    deleteUserValidation
+    deleteUserValidation,
+    changeUserPassword
 }

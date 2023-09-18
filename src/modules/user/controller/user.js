@@ -27,6 +27,15 @@ const updateUser = handleAsyncError(async (req, res, next) => {
 });
 
 
+const changeUserPassword = handleAsyncError(async (req, res, next) => {
+    let { id } = req.params;
+
+    const updatedUser = await userModel.findByIdAndUpdate(id, { password: req.body.password }, { new: true })
+    !updatedUser && next(new AppError('user  Not Found.', 404));
+    updatedUser && res.status(201).json({ message: "success", updatedUser });
+
+});
+
 
 const deleteUser = deleteOne(userModel, 'user');
 
@@ -36,5 +45,6 @@ export {
     getAllUsers,
     updateUser,
     getSpecificUser,
+    changeUserPassword,
     deleteUser
 }
