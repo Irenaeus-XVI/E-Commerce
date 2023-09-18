@@ -1,11 +1,9 @@
 import { productModel } from '../../../../database/models/product.model.js'
-import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
 
 const addProduct = handleAsyncError(async (req, res, next) => {
-    req.body.slug = slugify(req.body.title)
     req.body.imageCover = req.files.imageCover[0].filename
     req.body.images = req.files.images.map(image => image.filename)
     const product = new productModel(req.body)

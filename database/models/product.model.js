@@ -1,4 +1,5 @@
 import { Schema, Types, model } from "mongoose";
+import slugify from "slugify";
 
 
 
@@ -81,5 +82,10 @@ productSchema.post('init', (doc) => {
 
     doc.images = doc.images.map(image => "http://localhost:4000/product/" + image
     )
+})
+
+
+productSchema.pre('save', function () {
+    this.slug = slugify(this.title)
 })
 export const productModel = model('product', productSchema);

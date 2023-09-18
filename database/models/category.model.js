@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import slugify from "slugify";
 
 const categorySchema = new Schema({
     name: {
@@ -22,5 +22,9 @@ categorySchema.post('init', (doc) => {
     doc.image = "http://localhost:4000/category/" + doc.image
 })
 
+
+categorySchema.pre('save', function () {
+    this.slug = slugify(this.name)
+})
 
 export const categoryModel = model('category', categorySchema);

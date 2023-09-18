@@ -1,12 +1,10 @@
 import { subCategoryModel } from '../../../../database/models/subCategory.model.js'
-import slugify from "slugify";
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { categoryModel } from '../../../../database/models/category.model.js';
 import { deleteOne, getSpecific } from '../../../utils/helpers/refactor.js';
 
 const addSubCategory = handleAsyncError(async (req, res, next) => {
-    req.body.slug = slugify(req.body.name)
     const { category } = req.body
     const categoryExist = await categoryModel.findById(category)
     if (!categoryExist) {

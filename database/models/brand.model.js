@@ -1,4 +1,5 @@
 import { Schema, Types, model } from "mongoose";
+import slugify from "slugify";
 
 
 
@@ -19,5 +20,7 @@ const brandSchema = new Schema({
     }
 }, { timestamps: true });
 
-
+brandSchema.pre('save', function () {
+    this.slug = slugify(this.name)
+})
 export const brandModel = model('brand', brandSchema);
