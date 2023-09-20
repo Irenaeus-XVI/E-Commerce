@@ -25,4 +25,10 @@ const reviewSchema = new Schema({
 }, { timestamps: true });
 
 
+//NOTE - make array or regex
+reviewSchema.pre(/^find/, function () {
+    this.populate('user', 'name')
+})
+
+
 export const reviewModel = model('review', reviewSchema);
