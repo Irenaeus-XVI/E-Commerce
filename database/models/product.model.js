@@ -75,7 +75,15 @@ const productSchema = new Schema({
         type: Number,
         min: 0,
     },
-}, { timestamps: true });
+
+
+}, {
+    timestamps: true,
+    //NOTE - To allow virtual
+    toJSON: { virtuals: true },
+    //NOTE - To allow console log
+    toObject: { virtuals: true }
+});
 
 productSchema.post('init', (doc) => {
     doc.imageCover = "http://localhost:4000/product/" + doc.imageCover
@@ -87,5 +95,18 @@ productSchema.post('init', (doc) => {
 
 productSchema.pre('save', function () {
     this.slug = slugify(this.title)
+})
+
+
+//NOTE - Make Virtual populate for reviews in product (on the fly)
+productSchema.virtual("reviews", {
+    ref: "review",
+    localField: "_id",//NOTE - Schema that want to make virtual populate on it 
+    foreignField: "product"
+})
+
+
+productSchema.pre('find', function () {
+    this.populate('reviews')
 })
 export const productModel = model('product', productSchema);
