@@ -4,6 +4,7 @@ import brandRoutes from '../src/modules/brand/brand.routes.js'
 import productRoutes from '../src/modules/product/product.routes.js'
 import userRoutes from '../src/modules/user/user.routes.js'
 import authRouter from '../src/modules/auth/auth.routes.js'
+import reviewRouter from '../src/modules/review/review.routes.js'
 import { globalErrorHandling } from './middleware/globalErrorHandling.js'
 import { AppError } from './utils/AppError.js'
 
@@ -15,6 +16,7 @@ export const bootstrap = (app) => {
     app.use('/api/v1/products', productRoutes)
     app.use('/api/v1/users', userRoutes)
     app.use('/api/v1/auth', authRouter)
+    app.use('/api/v1/reviews', reviewRouter)
     app.get('/', (req, res) => res.send('Hello World!'))
 
     app.all('*', (req, res, next) => {
