@@ -38,6 +38,11 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     }
+    ,
+    changeUserPasswordAt: {
+        type: Date,
+        default: 0
+    }
 }, { timestamps: true });
 
 userSchema.pre('save', function () {
