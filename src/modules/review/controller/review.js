@@ -2,8 +2,14 @@ import { reviewModel } from '../../../../database/models/review.model.js'
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
+import { productModel } from '../../../../database/models/product.model.js'
 
 const addReview = handleAsyncError(async (req, res, next) => {
+
+
+    //NOTE - check product 
+    const product = await productModel.findOne({ _id: req.body.product })
+    if (!product) return next(new AppError('Product Not Found.', 409))
 
     //NOTE - Take Id from token 
     req.body.user = req.user._id
@@ -23,11 +29,11 @@ const getSpecificReview = getSpecific(reviewModel, 'Review')
 
 const updateReview = handleAsyncError(async (req, res, next) => {
     //NOTE - Take userId from token 
-    // req.body.user = req.user._id
+    //NOTE - req.body.user = req.user._id
     //NOTE - Review id
     const { id } = req.params
-    const updatedReview = await reviewModel.findOne({ user: req.user._id, _id: id }, req.body, { new: true })
-    !updatedReview && next(new AppError('Review  Not Found.', 404));
+    const updatedReview = await reviewModel.findOneAndUpdate({ user: req.user._id, _id: id }, req.body, { new: true })
+    !updatedReview && next(new AppError('Review  Not Found Or You Are Not Authorized.', 404));
     updatedReview && res.status(201).json({ message: "success", updatedReview });
 
 });

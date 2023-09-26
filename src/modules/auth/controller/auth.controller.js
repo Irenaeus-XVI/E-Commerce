@@ -45,6 +45,8 @@ const protectedRoutes = handleAsyncError(async (req, res, next) => {
 
 const allowTo = (...roles) => {
     return handleAsyncError(async (req, res, next) => {
+        console.log();
+
         if (!roles.includes(req.user.role)) return next(new AppError('You Are Not Allowed', 403))
         next()
     })
