@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 import bcrypt from 'bcrypt'
 
 
@@ -42,7 +42,11 @@ const userSchema = new Schema({
     changeUserPasswordAt: {
         type: Date,
         default: 0
-    }
+    },
+    wishList: [{
+        type: Types.ObjectId,
+        ref: "product"
+    }]
 }, { timestamps: true });
 
 userSchema.pre('save', function () {
@@ -51,7 +55,7 @@ userSchema.pre('save', function () {
 })
 
 userSchema.pre('findOneAndUpdate', function () {
-    this._update.password = bcrypt.hashSync(this._update.password, Number(process.env.SALT_ROUNDS))
+    if (this._update.password) this._update.password = bcrypt.hashSync(this._update.password, Number(process.env.SALT_ROUNDS))
 })
 
 
