@@ -2,14 +2,13 @@ import { couponModel } from '../../../../database/models/coupon.model.js'
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
-import { productModel } from '../../../../database/models/product.model.js'
-
+import QRCode from 'qrcode';
 const addCoupon = handleAsyncError(async (req, res, next) => {
 
-    console.log(req.body);
     const Coupon = new couponModel(req.body)
     await Coupon.save()
-    res.status(201).json({ message: "success", Coupon });
+    const url = await QRCode.toDataURL(Coupon.code)
+    res.status(201).json({ message: "success", Coupon, url });
 });
 
 
