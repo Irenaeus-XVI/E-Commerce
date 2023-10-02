@@ -46,6 +46,11 @@ const userSchema = new Schema({
     wishList: [{
         type: Types.ObjectId,
         ref: "product"
+    }],
+    address: [{
+        city: String,
+        street: String,
+        phone: String
     }]
 }, { timestamps: true });
 
