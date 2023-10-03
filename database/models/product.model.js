@@ -86,10 +86,14 @@ const productSchema = new Schema({
 });
 
 productSchema.post('init', (doc) => {
-    doc.imageCover = "http://localhost:4000/product/" + doc.imageCover
 
-    doc.images = doc.images.map(image => "http://localhost:4000/product/" + image
-    )
+    if (doc.imageCover && doc.images) {
+        doc.imageCover = "http://localhost:4000/product/" + doc.imageCover
+        doc.images = doc.images.map(image => "http://localhost:4000/product/" + image
+        )
+
+    }
+
 })
 
 

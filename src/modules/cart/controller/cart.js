@@ -6,8 +6,16 @@ import { productModel } from '../../../../database/models/product.model.js'
 
 const addProductToCart = handleAsyncError(async (req, res, next) => {
 
-    //NOTE - Check if user have cart or not
 
+
+    //NOTE - Check if product is not exist 
+    const product = await productModel.findById(req.body.product).select('price')
+    if (!product) return next(new AppError('Product is Not Exist.', 404))
+    
+    //NOTE - calc product price
+    req.body.price = product.price
+    
+    //NOTE - Check if user have cart or not
     let existCart = await cartModel.findOne({ user: req.user._id })
     if (!existCart) {
         const Cart = new cartModel({
