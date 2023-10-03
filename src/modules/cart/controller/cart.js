@@ -19,7 +19,14 @@ const addProductToCart = handleAsyncError(async (req, res, next) => {
 
     }
 
-    return res.status(201).json({ message: "add to cart" });
+    //NOTE - if exist cart and add same product to it 
+    const item = existCart.cartItems.find(item => item.product == req.body.product)
+    if (item) item.quantity += req.body.quantity || 1
+    else {
+        existCart.cartItems.push(req.body)
+    }
+    await existCart.save()
+    return res.status(201).json({ message: "add to cart", existCart });
 
 });
 
