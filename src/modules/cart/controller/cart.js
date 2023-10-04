@@ -13,6 +13,8 @@ function calcTotalPrice(cart) {
     })
     cart.totalPrice = totalPrice
 }
+
+
 const addProductToCart = handleAsyncError(async (req, res, next) => {
 
     //NOTE - Check if product is not exist 
@@ -66,10 +68,12 @@ const removeProductFromCart = handleAsyncError(async (req, res, next) => {
 
     !DeletedProduct && next(new AppError('item Not Found', 404));
     calcTotalPrice(DeletedProduct)
-    //NOTE - if coupon is applied and try to add new product 
+    //NOTE - if coupon is applied and try to delete new product 
     if (DeletedProduct.discount) {
         DeletedProduct.totalPriceAfterDiscount = DeletedProduct.totalPrice - (DeletedProduct.totalPrice * DeletedProduct.discount) / 100 //NOTE - 100-(100*50)/100
     }
+
+    //NOTE - remove discount if cart is empty
     if (DeletedProduct.cartItems.length == 0) {
         DeletedProduct.discount = 0
         DeletedProduct.save()
@@ -83,16 +87,31 @@ const getAllCarts = getAll(cartModel, 'Carts')
 
 const getSpecificCart = getSpecific(cartModel, 'Cart')
 
-const updateCart = handleAsyncError(async (req, res, next) => {
-    //NOTE - Take userId from token 
-    //NOTE - req.body.user = req.user._id
-    //NOTE - Cart id
-    const { id } = req.params
-    const updatedCart = await cartModel.findOneAndUpdate({ user: req.user._id, _id: id }, req.body, { new: true })
-    !updatedCart && next(new AppError('Cart  Not Found Or You Are Not Authorized.', 404));
-    updatedCart && res.status(201).json({ message: "success", updatedCart });
+const updateProductQuantity = handleAsyncError(async (req, res, next) => {
+
+    //NOTE - Check if product is not exist 
+    const product = await productModel.findById(req.params.id).select('price')
+    if (!product) return next(new AppError('Product is Not Exist.', 404))
+
+
+    let existCart = await cartModel.findOne({ user: req.user._id })
+
+    //NOTE - if exist cart and add same product to it 
+    const item = existCart.cartItems.find(item => item.product == req.params.id)
+    if (item) item.quantity = req.body.quantity
+
+    calcTotalPrice(existCart)
+
+    //NOTE - if coupon is applied and try to update product quantity
+    await existCart.save()
+
+    if (existCart.discount) {
+        existCart.totalPriceAfterDiscount = existCart.totalPrice - (existCart.totalPrice * existCart.discount) / 100 //NOTE - 100-(100*50)/100
+    }
+    return res.status(201).json({ message: "quantity updated", existCart });
 
 });
+
 
 
 
@@ -122,7 +141,7 @@ const applyCoupon = handleAsyncError(async (req, res, next) => {
 export {
     addProductToCart,
     getAllCarts,
-    updateCart,
+    updateProductQuantity,
     getSpecificCart,
     deleteCart,
     removeProductFromCart,
