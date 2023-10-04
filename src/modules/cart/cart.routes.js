@@ -5,14 +5,13 @@ const router = express.Router();
 
 router.route('/')
     .post(protectedRoutes, allowTo('user', 'admin'), Cart.addProductToCart)
-    .get(Cart.getAllCarts)
+    .get(protectedRoutes, allowTo('user', 'admin'), Cart.getLoggedUserCart)
+    .delete(protectedRoutes, allowTo('admin', 'user'), Cart.deleteUserCart)
 
 router.post('/applyCoupon', protectedRoutes, allowTo('user', 'admin'), Cart.applyCoupon)
 
 router.route('/:id')
     .put(protectedRoutes, allowTo('admin', 'user'), Cart.updateProductQuantity)
-    .delete(allowTo('admin'), Cart.deleteCart)
     .patch(protectedRoutes, allowTo('user', 'admin'), Cart.removeProductFromCart)
-    .get(Cart.getSpecificCart)
 
 export default router  

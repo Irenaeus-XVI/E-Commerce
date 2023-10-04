@@ -82,10 +82,14 @@ const removeProductFromCart = handleAsyncError(async (req, res, next) => {
 
 })
 
-const getAllCarts = getAll(cartModel, 'Carts')
 
 
-const getSpecificCart = getSpecific(cartModel, 'Cart')
+const getLoggedUserCart = handleAsyncError(async (req, res, next) => {
+
+    const cart = await cartModel.findOne({ user: req.user._id }).select('cartItems').populate('cartItems.product')
+    !cart && next(new AppError("cart is not found ", 404))
+    cart && res.status(200).json({ message: "success", cart })
+})
 
 const updateProductQuantity = handleAsyncError(async (req, res, next) => {
 
@@ -103,11 +107,12 @@ const updateProductQuantity = handleAsyncError(async (req, res, next) => {
     calcTotalPrice(existCart)
 
     //NOTE - if coupon is applied and try to update product quantity
-    await existCart.save()
 
     if (existCart.discount) {
         existCart.totalPriceAfterDiscount = existCart.totalPrice - (existCart.totalPrice * existCart.discount) / 100 //NOTE - 100-(100*50)/100
     }
+    await existCart.save()
+
     return res.status(201).json({ message: "quantity updated", existCart });
 
 });
@@ -115,7 +120,12 @@ const updateProductQuantity = handleAsyncError(async (req, res, next) => {
 
 
 
-const deleteCart = deleteOne(cartModel, 'Cart');
+const deleteUserCart = handleAsyncError(async (req, res, next) => {
+
+    const cart = await cartModel.findOneAndDelete({ user: req.user._id })
+    !cart && next(new AppError("cart is not found ", 404))
+    cart && res.status(200).json({ message: "success" })
+})
 
 
 
@@ -140,10 +150,9 @@ const applyCoupon = handleAsyncError(async (req, res, next) => {
 
 export {
     addProductToCart,
-    getAllCarts,
     updateProductQuantity,
-    getSpecificCart,
-    deleteCart,
+    getLoggedUserCart,
+    deleteUserCart,
     removeProductFromCart,
     applyCoupon
 }
