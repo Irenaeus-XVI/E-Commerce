@@ -48,6 +48,20 @@ const addProductToCart = handleAsyncError(async (req, res, next) => {
 });
 
 
+
+const removeProductFromCart = handleAsyncError(async (req, res, next) => {
+    const DeletedProduct = await cartModel.findOneAndUpdate({ user: req.user._id }, {
+        $pull: {
+            cartItems: { _id: req.params.id }
+        }
+    }, { new: true })
+
+    !DeletedProduct && next(new AppError('item Not Found', 404));
+    calcTotalPrice(DeletedProduct)
+    DeletedProduct && res.status(201).json({ message: "success", DeletedProduct });
+
+})
+
 const getAllCarts = getAll(cartModel, 'Carts')
 
 
@@ -74,5 +88,6 @@ export {
     getAllCarts,
     updateCart,
     getSpecificCart,
-    deleteCart
+    deleteCart,
+    removeProductFromCart
 }

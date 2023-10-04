@@ -18,9 +18,6 @@ const addToAddress = handleAsyncError(async (req, res, next) => {
 
 
 const deleteFromAddress = handleAsyncError(async (req, res, next) => {
-
-
-
     const address = await userModel.findOneAndUpdate({ _id: req.user._id }, {
         $pull: {
             address: { _id: req.body.address }
