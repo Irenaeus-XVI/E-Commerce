@@ -3,6 +3,7 @@ import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import { deleteOne, getAll, getSpecific } from '../../../utils/helpers/refactor.js';
 import { productModel } from '../../../../database/models/product.model.js'
+import { couponModel } from '../../../../database/models/coupon.model.js';
 
 
 function calcTotalPrice(cart) {
@@ -42,6 +43,13 @@ const addProductToCart = handleAsyncError(async (req, res, next) => {
     }
 
     calcTotalPrice(existCart)
+
+    //NOTE - if coupon is applied and try to add new product 
+    if (existCart.discount) {
+        existCart.totalPriceAfterDiscount = existCart.totalPrice - (existCart.totalPrice * existCart.discount) / 100 //NOTE - 100-(100*50)/100
+
+    }
+
     await existCart.save()
     return res.status(201).json({ message: "add to cart", existCart });
 
@@ -58,6 +66,14 @@ const removeProductFromCart = handleAsyncError(async (req, res, next) => {
 
     !DeletedProduct && next(new AppError('item Not Found', 404));
     calcTotalPrice(DeletedProduct)
+    //NOTE - if coupon is applied and try to add new product 
+    if (DeletedProduct.discount) {
+        DeletedProduct.totalPriceAfterDiscount = DeletedProduct.totalPrice - (DeletedProduct.totalPrice * DeletedProduct.discount) / 100 //NOTE - 100-(100*50)/100
+    }
+    if (DeletedProduct.cartItems.length == 0) {
+        DeletedProduct.discount = 0
+        DeletedProduct.save()
+    }
     DeletedProduct && res.status(201).json({ message: "success", DeletedProduct });
 
 })
@@ -83,11 +99,32 @@ const updateCart = handleAsyncError(async (req, res, next) => {
 const deleteCart = deleteOne(cartModel, 'Cart');
 
 
+
+
+const applyCoupon = handleAsyncError(async (req, res, next) => {
+
+
+    const { code } = req.body
+    const coupon = await couponModel.findOne({ code, expires: { $gt: Date.now() } })
+    console.log(coupon);
+    if (coupon) {
+        const cart = await cartModel.findOne({ user: req.user._id })
+        cart.totalPriceAfterDiscount = cart.totalPrice - (cart.totalPrice * coupon.discount) / 100 //NOTE - 100-(100*50)/100
+        cart.discount = coupon.discount
+        await cart.save()
+        return res.status(201).json({ message: "success", cart })
+    }
+    return res.status(404).json({ message: "coupon is expired" })
+
+
+});
+
 export {
     addProductToCart,
     getAllCarts,
     updateCart,
     getSpecificCart,
     deleteCart,
-    removeProductFromCart
+    removeProductFromCart,
+    applyCoupon
 }

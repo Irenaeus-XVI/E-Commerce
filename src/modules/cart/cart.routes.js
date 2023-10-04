@@ -7,6 +7,8 @@ router.route('/')
     .post(protectedRoutes, allowTo('user', 'admin'), Cart.addProductToCart)
     .get(Cart.getAllCarts)
 
+router.post('/applyCoupon', protectedRoutes, allowTo('user', 'admin'), Cart.applyCoupon)
+
 router.route('/:id')
     .put(protectedRoutes, allowTo('admin'), Cart.updateCart)
     .delete(allowTo('admin'), Cart.deleteCart)
