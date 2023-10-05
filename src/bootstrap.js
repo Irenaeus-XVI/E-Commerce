@@ -9,6 +9,7 @@ import wishListRoutes from '../src/modules/wishList/wishList.routes.js'
 import addressesRoutes from '../src/modules/address/address.routes.js'
 import couponsRoutes from '../src/modules/coupon/coupon.routes.js'
 import cartRoutes from '../src/modules/cart/cart.routes.js'
+import orderRoutes from '../src/modules/order/order.routes.js'
 import { globalErrorHandling } from './middleware/globalErrorHandling.js'
 import { AppError } from './utils/AppError.js'
 
@@ -25,6 +26,7 @@ export const bootstrap = (app) => {
     app.use('/api/v1/addresses', addressesRoutes)
     app.use('/api/v1/Coupons', couponsRoutes)
     app.use('/api/v1/Cart', cartRoutes)
+    app.use('/api/v1/Order', orderRoutes)
     app.get('/', (req, res) => res.send('Hello World!'))
 
     app.all('*', (req, res, next) => {
