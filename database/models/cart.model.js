@@ -4,7 +4,8 @@ import mongoose, { Schema, Types, model } from "mongoose";
 
 const cartSchema = new Schema({
     user: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'user'
     },
     cartItems: [{
         product: {
