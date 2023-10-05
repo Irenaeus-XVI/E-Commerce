@@ -26,7 +26,6 @@ export const getAll = (apiModel, name) => {
         const document = await apiFeatures.mongooseQuery
         let response = {}
         response[name] = document
-        console.log(response);
         res.status(201).json({ page: +apiFeatures.page, message: "success", ...response });
     })
 

@@ -55,7 +55,6 @@ const userSchema = new Schema({
 }, { timestamps: true });
 
 userSchema.pre('save', function () {
-    console.log(this);
     this.password = bcrypt.hashSync(this.password, Number(process.env.SALT_ROUNDS))
 })
 

@@ -135,7 +135,6 @@ const applyCoupon = handleAsyncError(async (req, res, next) => {
 
     const { code } = req.body
     const coupon = await couponModel.findOne({ code, expires: { $gt: Date.now() } })
-    console.log(coupon);
     if (coupon) {
         const cart = await cartModel.findOne({ user: req.user._id })
         cart.totalPriceAfterDiscount = cart.totalPrice - (cart.totalPrice * coupon.discount) / 100 //NOTE - 100-(100*50)/100
