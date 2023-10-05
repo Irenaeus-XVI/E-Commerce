@@ -6,11 +6,15 @@ const router = express.Router();
 
 
 
+router.route('/')
+    .get(protectedRoutes, allowTo('admin'), Order.getAllOrders)
 
 
+router.route('/user')
+    .get(protectedRoutes, allowTo('user', 'admin'), Order.getUserOrders)
 
 
 router.route('/:id')
-    .post(protectedRoutes, allowTo('user', 'admin'), Order.createCashOrder)
+    .post(protectedRoutes, allowTo('user'), Order.createCashOrder)
 
 export default router  

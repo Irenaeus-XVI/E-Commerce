@@ -52,8 +52,27 @@ const createCashOrder = handleAsyncError(async (req, res, next) => {
 
 });
 
+
+
+const getAllOrders = handleAsyncError(async (req, res, next) => {
+
+    const orders = await orderModel.find().populate('cartItems.product')
+    orders && res.status(200).json({ message: 'success', orders })
+    !orders && next(new AppError("no orders found."))
+});
+
+
+const getUserOrders = handleAsyncError(async (req, res, next) => {
+
+    const orders = await orderModel.find({ user: req.user._id }).populate('cartItems.product')
+    orders && res.status(200).json({ message: 'success', orders })
+    !orders && next(new AppError("no orders found."))
+});
 export {
-    createCashOrder
+    createCashOrder,
+    getAllOrders,
+    getUserOrders
+
 }
 
 
