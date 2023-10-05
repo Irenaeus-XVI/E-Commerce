@@ -7,7 +7,7 @@ import { allowTo, protectedRoutes } from '../auth/controller/auth.controller.js'
 const router = express.Router();
 let productFields = [{ name: 'imageCover', maxCount: 1 }, { name: 'images', maxCount: 20 }]
 router.route('/')
-    .post(protectedRoutes, allowTo('admin'), uploadMixedFiles(productFields, 'product'), validation(addProductValidation), product.addProduct)
+    .post(protectedRoutes, allowTo('admin', 'user'), uploadMixedFiles(productFields, 'product'), validation(addProductValidation), product.addProduct)
     .get(product.getAllProducts)
 
 router.route('/:id')
