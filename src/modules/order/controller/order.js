@@ -127,7 +127,7 @@ const createOnlineOrder = handleAsyncError((request, response) => {
 
     // Handle the event
     if (event.type == 'checkout.session.completed') {
-        const checkoutSessionCompleted = event.data.object;
+        handleWebHookEvent(event.data.object, response)
     } else {
         console.log(`Unhandled event type ${event.type}`);
     }
@@ -137,13 +137,59 @@ const createOnlineOrder = handleAsyncError((request, response) => {
     response.send();
 })
 
+
+
+
+
+async function handleWebHookEvent(event, res) {
+    //NOTE - get cart (cartId)
+    const cart = await cartModel.findById(event.client_reference_id)
+
+    const user = await userModel.findOne({ email: event.customer_email })
+    //NOTE - create order
+    const order = new orderModel({
+        user: user._id,
+        cartItems: cart.cartItems,
+        totalOrderPrice: event.amount_total / 100,
+        shippingAddress: event.metadata,
+        paymentMethod: 'card',
+        isPaid: true,
+        paidAt: Date.now()
+    })
+    await order.save()
+
+    //NOTE - increase sold product && decrease quantity
+    if (order) {
+        const options = cart.cartItems.map(item => ({
+            updateOne: {
+                filter: { _id: item.product },
+                update: {
+                    $inc: {
+                        stock: -item.quantity,
+                        sold: item.quantity
+                    }
+                }
+            }
+        }))
+        await productModel.bulkWrite(options)
+        //NOTE - clear user cart
+        await cartModel.findByIdAndDelete({ user: user._id })
+
+        return res.status(201).json({ message: 'success', order })
+
+    } else {
+        return next(new AppError('no cart to order', 404))
+
+    }
+}
+
+
 export {
     createCashOrder,
     getAllOrders,
     getUserOrders,
     createCheckOutSession,
     createOnlineOrder
-
 }
 
 
