@@ -173,7 +173,7 @@ async function handleWebHookEvent(event, res) {
         }))
         await productModel.bulkWrite(options)
         //NOTE - clear user cart
-        await cartModel.findByIdAndDelete({ user: user._id })
+        await cartModel.findByIdAndDelete(cart._id)
 
         return res.status(201).json({ message: 'success', order })
 
