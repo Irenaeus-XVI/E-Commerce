@@ -17,7 +17,6 @@ const signUp = handleAsyncError(async (req, res, next) => {
 const signIn = handleAsyncError(async (req, res, next) => {
 
     const user = await userModel.findOne({ email: req.body.email })
-    console.log(user);
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) return next(new AppError("Email Is Incorrect or Password"), 409)
 
     const token = jwt.sign({ email: user.email, name: user.name, id: user._id, role: user.role }, process.env.SECRET_KEY_TOKEN)
@@ -45,7 +44,6 @@ const protectedRoutes = handleAsyncError(async (req, res, next) => {
 
 const allowTo = (...roles) => {
     return handleAsyncError(async (req, res, next) => {
-        console.log();
 
         if (!roles.includes(req.user.role)) return next(new AppError('You Are Not Allowed', 403))
         next()
