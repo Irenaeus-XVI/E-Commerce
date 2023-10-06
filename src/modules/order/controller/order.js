@@ -115,8 +115,7 @@ const createCheckOutSession = handleAsyncError(async (req, res, next) => {
 
 
 
-const createOnlineOrder = handleAsyncError((request, response) => {
-    console.log("asdasdadsasd");
+const createOnlineOrder = handleAsyncError((request, response, next) => {
     const sig = request.headers['stripe-signature'].toString();
 
     let event;
@@ -124,7 +123,7 @@ const createOnlineOrder = handleAsyncError((request, response) => {
     try {
         event = stripe.webhooks.constructEvent(request.body, sig, process.env.WEB_HOOK_SECRET_KEY);
     } catch (err) {
-        return response.status(400).send(`Webhook Error: ${err.message}`);
+        return next(new AppError(`Webhook Error: ${err.message}`, 500))
     }
 
     // Handle the event
@@ -135,8 +134,7 @@ const createOnlineOrder = handleAsyncError((request, response) => {
     }
 
 
-    // Return a 200 response to acknowledge receipt of the event
-    response.send();
+
 })
 
 
@@ -179,10 +177,9 @@ async function handleWebHookEvent(event, res) {
 
         return res.status(201).json({ message: 'success', order })
 
-    } else {
-        return next(new AppError('no cart to order', 404))
 
     }
+
 }
 
 
