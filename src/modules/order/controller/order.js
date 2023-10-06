@@ -4,6 +4,7 @@ import { productModel } from '../../../../database/models/product.model.js'
 import { handleAsyncError } from '../../../utils/handleAsyncError.js';
 import { AppError } from '../../../utils/AppError.js';
 import Stripe from 'stripe';
+import { userModel } from '../../../../database/models/user.model.js';
 const stripe = new Stripe('sk_test_51Nxwq9IRG6CDAzu7e4emuVQoDlZYjBmEQQERaO6mHT4SoFWZUS4m7vEqwgu2d0TXUWypWIpZUn37wc0eceMAuQmd00ddJD0yVA');
 
 
@@ -115,6 +116,7 @@ const createCheckOutSession = handleAsyncError(async (req, res, next) => {
 
 
 const createOnlineOrder = handleAsyncError((request, response) => {
+    console.log("asdasdadsasd");
     const sig = request.headers['stripe-signature'].toString();
 
     let event;

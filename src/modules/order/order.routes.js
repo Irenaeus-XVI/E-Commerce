@@ -15,7 +15,7 @@ router.route('/user')
 
 
 router.route('/:id')
-    .post(protectedRoutes, allowTo('user'), Order.createCashOrder)
+    .post(protectedRoutes, allowTo('user', 'admin'), Order.createCashOrder)
 
 router.route('/checkOut/:id')
     .post(protectedRoutes, allowTo('user', 'admin'), Order.createCheckOutSession)
