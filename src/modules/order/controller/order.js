@@ -115,7 +115,7 @@ const createCheckOutSession = handleAsyncError(async (req, res, next) => {
 
 
 
-const createOnlineOrder = handleAsyncError((request, response, next) => {
+const createOnlineOrder = handleAsyncError(async(request, response, next) => {
     const sig = request.headers['stripe-signature'].toString();
 
     let event;
