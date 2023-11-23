@@ -22,9 +22,6 @@ const signIn = handleAsyncError(async (req, res, next) => {
     const token = jwt.sign({ email: user.email, name: user.name, id: user._id, role: user.role }, process.env.SECRET_KEY_TOKEN)
     res.status(201).json({ message: "success", token });
 
-
-
-
 });
 
 
