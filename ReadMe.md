@@ -1,4 +1,4 @@
-# SARAHA-APP
+# E-Commerce-App
 
 E-Commerce Project is a scalable and customizable platform for online businesses. It's built using Node.js, Express, and MongoDB.
 ## Getting Started
